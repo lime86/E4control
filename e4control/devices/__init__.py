@@ -13,6 +13,7 @@ from .K617 import K617
 from .K2000 import K2000
 from .K2410 import K2410
 from .K2614 import K2614
+from .K6485 import K6485
 from .LU114 import LU114
 from .SB22 import SB22
 from .SHT75 import SHT75
@@ -37,6 +38,7 @@ __all__ = [
     'K2000',
     'K2410',
     'K2614',
+    'K6485',
     'SB22',
     'LU114',
     'SHT75',
