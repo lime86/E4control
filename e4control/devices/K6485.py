@@ -18,8 +18,9 @@ class K6485(Device):
 
     def initialize(self, iChannel='all'):
         self.reset()
-        # self.write(":INIT")
-        print("Initialize", self.ask('*IDN?'))
+        self.write(":INIT")
+        # self.ask('*IDN?')
+        # print("Initialize", self.ask('*IDN?'))
 
     def convert_iChannel(self, iChannel):
         one = [1, '1', 'one']

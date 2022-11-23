@@ -20,6 +20,7 @@ from .devices import (
     K2000,
     K2410,
     K2614,
+    K6485,
     SB22,
     LU114,
     SHT75,
