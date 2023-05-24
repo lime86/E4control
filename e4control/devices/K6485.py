@@ -14,7 +14,7 @@ class K6485(Device):
     def __init__(self, connection_type, host, port):
         super(K6485, self).__init__(
             connection_type=connection_type, host=host, port=port)
-        self.trm = '\r\n'
+        self.trm = '\n' ## K6485 message response terminator is LF and EOI (End or Identify)
 
     def initialize(self, iChannel='all'):
         self.reset()
