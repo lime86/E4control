@@ -19,8 +19,9 @@ class K6485(Device):
     def initialize(self, iChannel='all'):
         self.reset()
         self.write(":INIT")
-        # self.ask('*IDN?')
-        # print("Initialize", self.ask('*IDN?'))
+
+    def identify(self, iChannel="all"):
+        return self.ask('*IDN?')
 
     def convert_iChannel(self, iChannel):
         one = [1, '1', 'one']
@@ -35,29 +36,48 @@ class K6485(Device):
         self.write(":SENS:CURR:RANG:AUTO ON")
     def setAutoRangeOff(self, iChannel=-1):
         self.write(":SENS:CURR:RANG:AUTO OFF")
-        
     def setAutoRange(self, opt=0, iChannel=-1):
         if opt:
             setCurrentAutoRangeOn()
         else:
             setCurrentAutoRangeOff()
     def getAutoRangeStatus(self, iChannel=-1):
-        self.ask(":SENS:CURR:RANG:AUTO?")
+        return self.ask(":SENS:CURR:RANG:AUTO?")
         
     def setCurrentRange(self, sRange, iChannel=-1):
         self.write(":SENS:CURR:RANG {}".format(sRange))
-        
     def getCurrentRange(self, iChannel=-1):
-        self.ask(":SENS:CURR:RANG:ULIM?")
+        return self.ask(":SENS:CURR:RANG:ULIM?")
+
+    ## NPLC: Number of power line cycles;
+    ## 1 PLC for 60Hz is 16.67msec (1/60) and 1 PLC for 50Hz (and 400Hz) is 20msec (1/50)
+    ## default is 5 or 6, optimum is 1--10, range is 0.01--50/60
+
+    def setNPLC(self, iChannel=-1, n=5):
+        self.write(":SENS:CURR:NPLC {}".format(n))
+
+    def setIntegrationRate(self, iChannel=-1, speed="slow"):
+        n = 5
+        if speed == "fast":
+            n = 0.1
+        elif speed == "med" or speed == "medium":
+            n = 1
+        elif speed == "slow":
+            n = 5
+        self.write(":SENS:CURR:NPLC {}".format(n))
+
 
     def getCurrent(self, iChannel=-1):
-        sValue = self.ask("READ?").split("A")[0]
-        print("getCurrent", sValue)
-        return float(sValue.lower())
-        
+        try:
+            sValue = self.ask("READ?").split("A")[0]
+            return float(sValue.lower())
+        except Exception as e:
+            print(e)
+            raise
+        return None
         
     def getAutoZeroStatus(self, iChannel=-1):
-        self.ask(":SYST:AZER?")
+        return self.ask(":SYST:AZER?")
     def setAutoZeroOn(self, iChannel=-1):
         self.write(":SYST:AZER:STAT ON")
     def setAutoZeroOff(self, iChannel=-1):
@@ -69,7 +89,7 @@ class K6485(Device):
             setAutoZeroOff()
             
     def getZeroCheckStatus(self, iChannel=-1):
-        self.ask(":SYST:ZCH:STAT?")
+        return self.ask(":SYST:ZCH:STAT?")
     def setZeroCheckOn(self, iChannel=-1):
         self.write(":SYST:ZCH:STAT ON")
     def setZeroCheckOff(self, iChannel=-1):
@@ -81,7 +101,7 @@ class K6485(Device):
             setZeroCheckOff()
             
     def getZeroCorrectStatus(self, iChannel=-1):
-        self.ask(":SYST:ZCOR?")
+        return self.ask(":SYST:ZCOR?")
     def setCheckOn(self, iChannel=-1):
         self.write(":SYST:ZCOR:STAT ON")
     def setCheckOff(self, iChannel=-1):
